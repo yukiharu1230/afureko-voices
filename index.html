@@ -17,15 +17,17 @@ fetch("https://script.google.com/macros/s/あなたの公開URL/exec")
     list.innerHTML = "";
     data.forEach(entry => {
       const div = document.createElement("div");
+      div.className = "entry";
 
       const sns = entry["SNS"] ? `<a href="${entry["SNS"]}" target="_blank">${entry["SNS"]}</a>` : "未登録";
+      const all = entry["全音声"] ? `<br>📥 <a href="${entry["全音声"]}" target="_blank">全音声ダウンロード</a>` : "";
 
       div.innerHTML = `
         <h3>${entry["キャラ"]}（CV投稿：${entry["投稿者名"]}）</h3>
         <p>
           🔗 SNS：${sns}<br>
-          ▶️ <a href="${entry["サンプル"]}" target="_blank">サンプル音声</a><br>
-          📥 <a href="${entry["全音声"]}" target="_blank">全音声ダウンロード</a>
+          ▶️ <a href="${entry["サンプル"]}" target="_blank">サンプル音声</a>
+          ${all}
         </p>
         <hr>
       `;
