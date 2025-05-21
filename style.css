@@ -1,0 +1,15 @@
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+  background: #f9f9f9;
+}
+
+h1 {
+  font-size: 2em;
+  color: #333;
+}
+
+audio {
+  margin-top: 0.5em;
+  display: block;
+}
