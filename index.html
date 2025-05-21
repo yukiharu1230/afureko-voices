@@ -36,9 +36,8 @@ fetch("https://script.google.com/macros/s/AKfycbx2G-SWBccAbDMTpM4jtT4nANkqwr-kxO
   })
   .catch(err => {
     document.getElementById("voiceList").innerText = "読み込みに失敗しました。";
-    console.error(err);
+    console.error("エラー詳細:", err);
   });
-
   </script>
 </body>
 </html>
