@@ -4,22 +4,74 @@
   <meta charset="UTF-8">
   <title>chapter1 - アフレコノベル 音声ライブラリ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: sans-serif; margin: 0; padding: 24px; color: #111; }
-    header { font-size: 1.4em; font-weight: bold; margin-bottom: 8px; }
-    .note { color: #e74c3c; margin-bottom: 20px; }
-    .library-container { max-height: calc(100vh - 150px); overflow-y: auto; }
-    .character-block { display: flex; align-items: flex-start; margin-bottom: 32px; }
-    .char-image { width: 180px; margin-right: 16px; }
-    .char-name { writing-mode: vertical-rl; font-weight: bold; font-size: 1.1em; margin-right: 8px; }
-    .voice-list { flex-grow: 1; }
-    .voice-item { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
-    .cv-name { min-width: 60px; }
-    .audio-player { flex-grow: 1; }
-    .toggle-button { cursor: pointer; background: #eee; padding: 4px 8px; border-radius: 4px; }
-    .toggle-content { display: none; font-size: 0.85em; margin-top: 4px; }
-    .voice-item.open .toggle-content { display: block; }
-  </style>
+<style>
+  body { font-family: sans-serif; margin: 0; padding: 24px; color: #111; }
+  header { font-size: 1.4em; font-weight: bold; margin-bottom: 8px; }
+  .note { color: #e74c3c; margin-bottom: 20px; }
+
+  .library-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .character-block {
+    display: flex;
+    flex-direction: row;
+    width: calc(50% - 10px); /* 2列 */
+    align-items: flex-start;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 16px;
+  }
+
+  .char-image {
+    width: 140px;
+    margin-right: 12px;
+  }
+
+  .char-name {
+    writing-mode: vertical-rl;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-right: 6px;
+  }
+
+  .voice-list {
+    flex-grow: 1;
+  }
+
+  .voice-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .cv-name { min-width: 60px; }
+  .audio-player { flex-grow: 1; }
+  .toggle-button {
+    cursor: pointer;
+    background: #eee;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .toggle-content {
+    display: none;
+    font-size: 0.85em;
+    margin-top: 4px;
+  }
+
+  .voice-item.open .toggle-content {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .character-block {
+      width: 100%; /* スマホでは1列に戻す */
+    }
+  }
+</style>
 </head>
 <body>
 
