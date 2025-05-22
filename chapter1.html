@@ -85,7 +85,7 @@
 
   <script>
     async function loadLibrary() {
-      const res = await fetch('data.json');
+      const res = await fetch("data.json?v=" + Date.now());
       const rawData = await res.json();
 
       const displayOrder = [
