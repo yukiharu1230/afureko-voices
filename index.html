@@ -58,7 +58,7 @@
       icon.textContent = isVisible ? "▼" : "▲";
     }
 
-    fetch("data.json")
+    fetch("data.json?v=" + Date.now())
       .then(response => response.json())
       .then(data => {
         const list = document.getElementById("voiceList");
