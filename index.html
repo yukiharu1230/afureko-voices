@@ -2,94 +2,60 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>アフレコノベル 音声ライブラリ</title>
+  <title>アフレコノベル カスタムCV 音声ライブラリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
   <style>
     body {
-      font-family: sans-serif;
-      background: #f9f9f9;
-      padding: 2rem;
+      font-family: 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      color: #111;
+      text-align: center;
     }
-    .entry {
-      background: #fff;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    header {
+      padding: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
     }
-    .summary {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
+
+    .title-image {
+      width: 640px;
+      height: auto;
+      margin: 20px auto;
     }
-    .summary strong {
-      flex: 1;
+
+    .chapter-link {
+      display: inline-block;
+      margin: 20px;
+      padding: 12px 24px;
+      font-size: 1.2em;
+      color: #fff;
+      background-color: #e74c3c;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background-color 0.3s;
     }
-    .summary .toggle {
-      font-size: 1.5rem;
-      margin-left: 1rem;
-      user-select: none;
-    }
-    .details {
-      margin-top: 1rem;
-      padding-left: 1rem;
-      display: none;
-    }
-    audio {
-      margin-left: 1rem;
+
+    .chapter-link:hover {
+      background-color: #c0392b;
     }
   </style>
 </head>
 <body>
-  <h1>🎤 アフレコノベル 音声ライブラリ</h1>
-  <div id="voiceList">読み込み中です...</div>
 
-  <script>
-    function convertDriveUrlToAudio(url) {
-      const match = url.match(/(?:id=|file\/d\/)([^\/&?]+)/);
-      return match ? `https://docs.google.com/uc?export=preview&id=${match[1]}` : "";
-    }
+  <header>アフレコノベル　カスタムCV　音声ライブラリ</header>
 
-    function toggleDetails(element) {
-      const details = element.nextElementSibling;
-      const icon = element.querySelector(".toggle");
-      const isVisible = details.style.display === "block";
-      details.style.display = isVisible ? "none" : "block";
-      icon.textContent = isVisible ? "▼" : "▲";
-    }
+  <img src="img/title.jpg" alt="Veinless Pride" class="title-image">
 
-    fetch("data.json?v=" + Date.now())
-      .then(response => response.json())
-      .then(data => {
-        const list = document.getElementById("voiceList");
-        list.innerHTML = "";
+  <div>
+    <a href="chapter1.html" class="chapter-link">Chapter 1</a>
+    <!-- 追加予定ならこちらも用意しておけます -->
+    <!-- <a href="chapter2.html" class="chapter-link">Chapter 2</a> -->
+  </div>
 
-        data.forEach(entry => {
-          const div = document.createElement("div");
-          div.className = "entry";
-
-          const sampleAudioUrl = entry["サンプル"];
-          const fullUrl = entry["全音声"] || "#";
-          const sns = entry["SNS"] || "";
-
-          div.innerHTML = `
-            <div class="summary" onclick="toggleDetails(this)">
-              <strong>${entry["キャラ"]}（CV投稿：${entry["投稿者名"]}）</strong>
-              <audio controls src="${sampleAudioUrl}" preload="none"></audio>
-              <span class="toggle">▼</span>
-            </div>
-            <div class="details">
-              🔗 SNS：${sns ? `<a href="${sns}" target="_blank">${sns}</a>` : "未登録"}<br>
-              📥 <a href="${fullUrl}" target="_blank">全音声ダウンロード</a>
-            </div>
-          `;
-          list.appendChild(div);
-        });
-      })
-      .catch(err => {
-        document.getElementById("voiceList").innerText = "読み込みに失敗しました。";
-        console.error("エラー詳細:", err);
-      });
-  </script>
 </body>
 </html>
