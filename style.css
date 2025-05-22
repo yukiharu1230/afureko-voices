@@ -1,15 +1,18 @@
-body {
-  font-family: sans-serif;
-  margin: 2rem;
-  background: #f9f9f9;
+.character-row {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 24px;
+  padding: 16px;
 }
 
-h1 {
-  font-size: 2em;
-  color: #333;
+.character-row.even {
+  background-color: #f8f8f8;
 }
 
-audio {
-  margin-top: 0.5em;
-  display: block;
+.character-block {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
 }

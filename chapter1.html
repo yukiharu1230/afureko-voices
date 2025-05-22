@@ -4,74 +4,86 @@
   <meta charset="UTF-8">
   <title>chapter1 - アフレコノベル 音声ライブラリ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body { font-family: sans-serif; margin: 0; padding: 24px; color: #111; }
-  header { font-size: 1.4em; font-weight: bold; margin-bottom: 8px; }
-  .note { color: #e74c3c; margin-bottom: 20px; }
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 24px; color: #111; }
+    header { font-size: 1.4em; font-weight: bold; margin-bottom: 8px; }
+    .note { color: #e74c3c; margin-bottom: 20px; }
 
-  .library-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .character-block {
-    display: flex;
-    flex-direction: row;
-    width: calc(50% - 10px); /* 2列 */
-    align-items: flex-start;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 16px;
-  }
-
-  .char-image {
-    width: 140px;
-    margin-right: 12px;
-  }
-
-  .char-name {
-    writing-mode: vertical-rl;
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-right: 6px;
-  }
-
-  .voice-list {
-    flex-grow: 1;
-  }
-
-  .voice-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 8px;
-  }
-
-  .cv-name { min-width: 60px; }
-  .audio-player { flex-grow: 1; }
-  .toggle-button {
-    cursor: pointer;
-    background: #eee;
-    padding: 4px 8px;
-    border-radius: 4px;
-  }
-
-  .toggle-content {
-    display: none;
-    font-size: 0.85em;
-    margin-top: 4px;
-  }
-
-  .voice-item.open .toggle-content {
-    display: block;
-  }
-
-  @media (max-width: 768px) {
-    .character-block {
-      width: 100%; /* スマホでは1列に戻す */
+    .library-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
-  }
-</style>
+
+    .character-row {
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+      gap: 20px;
+      padding: 16px;
+    }
+
+    .character-row.even {
+      background-color: #f8f8f8;
+    }
+
+    .character-block {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .char-image {
+      width: 140px;
+      margin-right: 12px;
+    }
+
+    .char-name {
+      writing-mode: vertical-rl;
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-right: 6px;
+    }
+
+    .voice-list {
+      flex-grow: 1;
+    }
+
+    .voice-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .cv-name { min-width: 60px; }
+    .audio-player { flex-grow: 1; }
+    .toggle-button {
+      cursor: pointer;
+      background: #eee;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .toggle-content {
+      display: none;
+      font-size: 0.85em;
+      margin-top: 4px;
+    }
+
+    .voice-item.open .toggle-content {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .character-row {
+        flex-direction: column;
+      }
+      .character-block {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -85,7 +97,8 @@
 
   <script>
     async function loadLibrary() {
-      const res = await fetch("data.json?v=" + Date.now());
+      const timestamp = new Date().getTime(); // キャッシュバスター
+      const res = await fetch(`data.json?t=${timestamp}`);
       const rawData = await res.json();
 
       const displayOrder = [
@@ -103,35 +116,43 @@
 
       const container = document.getElementById('library');
 
-      displayOrder.forEach((charName, index) => {
-        const items = grouped[charName];
-        if (!items) return;
+      for (let i = 0; i < displayOrder.length; i += 2) {
+        const row = document.createElement('div');
+        row.className = 'character-row' + ((i / 2) % 2 === 0 ? ' even' : '');
 
-        const block = document.createElement('div');
-        block.className = 'character-block';
+        [0, 1].forEach(offset => {
+          const idx = i + offset;
+          const charName = displayOrder[idx];
+          const items = grouped[charName];
+          if (!items) return;
 
-        const charImagePath = `chara/01_0${index + 1}.png`;
+          const block = document.createElement('div');
+          block.className = 'character-block';
+          const imagePath = `chara/01_0${idx + 1}.png`;
 
-        block.innerHTML = `
-          <div class="char-name">${charName}</div>
-          <img src="${charImagePath}" alt="${charName}" class="char-image">
-          <div class="voice-list">
-            ${items.map(v => `
-              <div class="voice-item">
-                <div class="cv-name">${v["投稿者名"]}</div>
-                <audio controls class="audio-player" src="${v["サンプル"]}"></audio>
-                <div class="toggle-button" onclick="this.parentElement.classList.toggle('open')">▼</div>
-                <div class="toggle-content">
-                  <a href="${v["SNS"] || '#'}" target="_blank">SNS</a> ／ 
-                  <a href="${v["全音声"] || '#'}" download>全DL</a>
+          block.innerHTML = `
+            <div class="char-name">${charName}</div>
+            <img src="${imagePath}" alt="${charName}" class="char-image">
+            <div class="voice-list">
+              ${items.map(v => `
+                <div class="voice-item">
+                  <div class="cv-name">${v["投稿者名"]}</div>
+                  <audio controls class="audio-player" src="${v["サンプル"]}"></audio>
+                  <div class="toggle-button" onclick="this.parentElement.classList.toggle('open')">▼</div>
+                  <div class="toggle-content">
+                    <a href="${v["SNS"] || '#'}" target="_blank">SNS</a> ／ 
+                    <a href="${v["全音声"] || '#'}" download>全DL</a>
+                  </div>
                 </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
+              `).join('')}
+            </div>
+          `;
 
-        container.appendChild(block);
-      });
+          row.appendChild(block);
+        });
+
+        container.appendChild(row);
+      }
     }
 
     loadLibrary();
