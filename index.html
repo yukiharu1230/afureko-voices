@@ -58,7 +58,7 @@
       icon.textContent = isVisible ? "▼" : "▲";
     }
 
-    fetch("https://script.google.com/macros/s/AKfycbx2G-SWBccAbDMTpM4jtT4nANkqwr-kxOos232CFMLVa2v5oc8q9_PzThBdPwTqtoaeog/exec")
+    fetch("data.json")
       .then(response => response.json())
       .then(data => {
         const list = document.getElementById("voiceList");
