@@ -5,99 +5,21 @@
   <title>chapter1 - アフレコノベル 音声ライブラリ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fff;
-      color: #111;
-    }
-
-    header {
-      text-align: center;
-      padding: 24px 16px 12px;
-      font-size: 1.6em;
-      font-weight: bold;
-    }
-
-    .note {
-      text-align: center;
-      color: #e74c3c;
-      font-size: 0.9em;
-      margin-bottom: 20px;
-    }
-
-    .library-container {
-      max-height: calc(100vh - 150px);
-      overflow-y: auto;
-      padding: 0 24px 40px;
-    }
-
-    .character-block {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      margin-bottom: 40px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 20px;
-    }
-
-    .char-image {
-      width: 200px;
-      height: auto;
-      margin-right: 20px;
-    }
-
-    .char-name {
-      writing-mode: vertical-rl;
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-right: 10px;
-    }
-
-    .voice-list {
-      flex-grow: 1;
-      min-width: 250px;
-    }
-
-    .voice-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 12px;
-      gap: 10px;
-    }
-
-    .cv-name {
-      min-width: 60px;
-    }
-
-    .audio-player {
-      flex-grow: 1;
-    }
-
-    .toggle-button {
-      cursor: pointer;
-      background: #eee;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-
-    .toggle-content {
-      display: none;
-      margin-top: 4px;
-      font-size: 0.85em;
-    }
-
-    .voice-item.open .toggle-content {
-      display: block;
-    }
+    body { font-family: sans-serif; margin: 0; padding: 24px; color: #111; }
+    header { font-size: 1.4em; font-weight: bold; margin-bottom: 8px; }
+    .note { color: #e74c3c; margin-bottom: 20px; }
+    .library-container { max-height: calc(100vh - 150px); overflow-y: auto; }
+    .character-block { display: flex; align-items: flex-start; margin-bottom: 32px; }
+    .char-image { width: 180px; margin-right: 16px; }
+    .char-name { writing-mode: vertical-rl; font-weight: bold; font-size: 1.1em; margin-right: 8px; }
+    .voice-list { flex-grow: 1; }
+    .voice-item { display: flex; align-items: center; margin-bottom: 10px; gap: 8px; }
+    .cv-name { min-width: 60px; }
+    .audio-player { flex-grow: 1; }
+    .toggle-button { cursor: pointer; background: #eee; padding: 4px 8px; border-radius: 4px; }
+    .toggle-content { display: none; font-size: 0.85em; margin-top: 4px; }
+    .voice-item.open .toggle-content { display: block; }
   </style>
-  <script>
-    function toggleDetails(el) {
-      el.closest('.voice-item').classList.toggle('open');
-    }
-  </script>
 </head>
 <body>
 
@@ -107,26 +29,61 @@
     各CVご担当者様へご確認いただきますようお願い申し上げます。
   </div>
 
-  <div class="library-container">
+  <div class="library-container" id="library"></div>
 
-    <!-- キャラブロック（例：ショウ） -->
-    <div class="character-block">
-      <div class="char-name">ショウ</div>
-      <img src="chara/13_01.png" alt="ショウ" class="char-image">
-      <div class="voice-list">
-        <div class="voice-item">
-          <div class="cv-name">ユキハル</div>
-          <audio controls class="audio-player" src="voices/sho_001.mp3"></audio>
-          <div class="toggle-button" onclick="toggleDetails(this)">▼</div>
-          <div class="toggle-content">[SNSリンク] [全DLリンク]</div>
-        </div>
-        <!-- 他の音声も同様に -->
-      </div>
-    </div>
+  <script>
+    async function loadLibrary() {
+      const res = await fetch('data/data.json');
+      const rawData = await res.json();
 
-    <!-- 以下、エリス、ソラ、ライラ…と続けて追加 -->
+      const displayOrder = [
+        "ショウ", "ソラ", "チェイス", "ライラ", "エリス", "ノア", "ケイデン"
+      ];
 
-  </div>
+      const grouped = {};
+      rawData
+        .filter(d => d["チャプター"] === "chapter1")
+        .forEach(entry => {
+          const name = entry["キャラ"];
+          if (!grouped[name]) grouped[name] = [];
+          grouped[name].push(entry);
+        });
+
+      const container = document.getElementById('library');
+
+      displayOrder.forEach((charName, index) => {
+        const items = grouped[charName];
+        if (!items) return;
+
+        const block = document.createElement('div');
+        block.className = 'character-block';
+
+        const charImagePath = `chara/01_0${index + 1}.png`;
+
+        block.innerHTML = `
+          <div class="char-name">${charName}</div>
+          <img src="${charImagePath}" alt="${charName}" class="char-image">
+          <div class="voice-list">
+            ${items.map(v => `
+              <div class="voice-item">
+                <div class="cv-name">${v["投稿者名"]}</div>
+                <audio controls class="audio-player" src="${v["サンプル"]}"></audio>
+                <div class="toggle-button" onclick="this.parentElement.classList.toggle('open')">▼</div>
+                <div class="toggle-content">
+                  <a href="${v["SNS"] || '#'}" target="_blank">SNS</a> ／ 
+                  <a href="${v["全音声"] || '#'}" download>全DL</a>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        container.appendChild(block);
+      });
+    }
+
+    loadLibrary();
+  </script>
 
 </body>
 </html>
