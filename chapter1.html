@@ -132,15 +132,15 @@
 
 [0, 1].forEach(offset => {
   const idx = i + offset;
+  if (idx >= displayOrder.length) return; // ← この一行を追加！
+
   const charName = displayOrder[idx];
   const items = grouped[charName] || [];
-
   const block = document.createElement('div');
   block.className = 'character-block';
 
   const imagePath = `chara/01_0${idx + 1}.png`;
 
-  // 常にキャラを表示、音声がない場合はメッセージ
   block.innerHTML = `
     <div class="char-name">${charName}</div>
     <img src="${imagePath}" alt="${charName}" class="char-image">
@@ -148,16 +148,16 @@
       ${
         items.length
           ? items.map(v => `
-            <div class="voice-item">
-              <div class="cv-name">${v["投稿者名"]}</div>
-              <audio controls class="audio-player" src="${v["サンプル"]}"></audio>
-              <div class="toggle-button" onclick="this.parentElement.classList.toggle('open')">▼</div>
-              <div class="toggle-content">
-                <a href="${v["SNS"] || '#'}" target="_blank">SNS</a> ／ 
-                <a href="${v["全音声"] || '#'}" download>全DL</a>
+              <div class="voice-item">
+                <div class="cv-name">${v["投稿者名"]}</div>
+                <audio controls class="audio-player" src="${v["サンプル"]}"></audio>
+                <div class="toggle-button" onclick="this.parentElement.classList.toggle('open')">▼</div>
+                <div class="toggle-content">
+                  <a href="${v["SNS"] || '#'}" target="_blank">SNS</a> ／ 
+                  <a href="${v["全音声"] || '#'}" download>全DL</a>
+                </div>
               </div>
-            </div>
-          `).join('')
+            `).join('')
           : `<div class="voice-item"><em>音声未登録</em></div>`
       }
     </div>
