@@ -142,8 +142,8 @@
   const block = document.createElement('div');
   block.className = 'character-block';
 
-  const imageIndex = (idx + 1).toString().padStart(2, '0');
-  const imagePath = `chara/01_0${idx + 1}.png`;
+const imageIndex = (idx + 1).toString().padStart(2, '0');
+const imagePath = `chara/01_${imageIndex}.png`;
 
   block.innerHTML = `
     <div class="char-name">${charName}</div>
