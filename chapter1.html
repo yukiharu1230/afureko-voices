@@ -135,13 +135,14 @@
 
 [0, 1].forEach(offset => {
   const idx = i + offset;
-  if (idx >= displayOrder.length) return; // ← この一行を追加！
+  if (idx >= displayOrder.length) return; 
 
   const charName = displayOrder[idx];
   const items = grouped[charName] || [];
   const block = document.createElement('div');
   block.className = 'character-block';
 
+  const imageIndex = (idx + 1).toString().padStart(2, '0');
   const imagePath = `chara/01_0${idx + 1}.png`;
 
   block.innerHTML = `
